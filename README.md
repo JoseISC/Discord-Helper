@@ -60,11 +60,25 @@ DISCORD_TOKEN=tu_token_aqui
 OLLAMA_MODEL=llama3
 ```
 
-### 5. Descargar el modelo Ollama
+### 5. Modelo Ollama
+
+**Opción A — modelo genérico**
 
 ```bash
 ollama pull llama3
 ```
+
+En `.env`, usa por ejemplo `OLLAMA_MODEL=llama3`.
+
+**Opción B — modelo definido en el repositorio (`Modelfile`)**
+
+Este proyecto incluye un `Modelfile` que crea el modelo local `gemma-aggressive` (Ollama descargará la imagen base indicada en el archivo la primera vez que haga falta):
+
+```bash
+ollama create gemma-aggressive -f Modelfile
+```
+
+En `.env`, establece `OLLAMA_MODEL=gemma-aggressive`.
 
 ---
 
@@ -125,6 +139,7 @@ python main.py
 Discord-Helper/
 ├── .env                   # Variables de entorno (no commitear)
 ├── .env.example           # Plantilla de variables de entorno
+├── Modelfile              # Definición Ollama para `gemma-aggressive` (ver instalación, opción B)
 ├── requirements.txt
 ├── main.py                # Entry point
 └── src/

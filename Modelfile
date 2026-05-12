@@ -1,0 +1,4 @@
+FROM joe-speedboat/Gemma-4-Uncensored-HauhauCS-Aggressive:e4b
+
+# Set the context window to 32,768 tokens
+PARAMETER num_ctx 32768
