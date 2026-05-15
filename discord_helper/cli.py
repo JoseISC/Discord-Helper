@@ -2,9 +2,8 @@ from __future__ import annotations
 
 import os
 import shutil
-import subprocess
 import sys
-from pathlib import Path
+import webbrowser
 
 import typer
 
@@ -12,6 +11,7 @@ from .config_loader import CONFIG_FILE
 from .config_loader import LOG_DIR
 from .config_loader import load_config
 from .config_loader import save_config
+from .gui_server import serve as serve_gui
 from .platform_utils import detect_nvidia_smi
 from .platform_utils import detect_ollama
 from .platform_utils import get_platform_info
@@ -24,20 +24,12 @@ app = typer.Typer(help="Discord Helper CLI")
 
 @app.command()
 def setup():
-    """Interactive setup wizard."""
-
     typer.echo("Discord Helper Setup")
 
     discord_token = typer.prompt("Discord bot token")
     ollama_model = typer.prompt("Ollama model", default="llama3")
-    ollama_host = typer.prompt(
-        "Ollama host",
-        default="http://localhost:11434",
-    )
-    whisper_model = typer.prompt(
-        "Whisper model",
-        default="medium",
-    )
+    ollama_host = typer.prompt("Ollama host", default="http://localhost:11434")
+    whisper_model = typer.prompt("Whisper model", default="medium")
 
     save_config(
         {
@@ -53,8 +45,6 @@ def setup():
 
 @app.command()
 def doctor():
-    """Validate local environment."""
-
     load_config()
 
     typer.echo("Running diagnostics...\n")
@@ -70,63 +60,62 @@ def doctor():
 
 @app.command()
 def run():
-    """Run Discord Helper bot."""
-
     run_bot()
+
+
+@app.command()
+def gui(host: str = "127.0.0.1", port: int = 8750, open_browser: bool = True):
+    """Start GUI runtime server."""
+
+    url = f"http://{host}:{port}"
+
+    typer.echo(f"Starting GUI server at {url}")
+
+    if open_browser:
+        webbrowser.open(url)
+
+    serve_gui(host=host, port=port)
+
+
+@app.command(name="open-gui")
+def open_gui():
+    webbrowser.open("http://127.0.0.1:8750")
 
 
 @app.command(name="install-service")
 def install_service():
-    """Install local background service."""
-
     result = install_local_service()
     typer.echo(result)
 
 
 @app.command(name="uninstall-service")
 def uninstall_service():
-    """Remove local background service."""
-
     result = uninstall_local_service()
     typer.echo(result)
 
 
 @app.command()
 def logs():
-    """Show application logs."""
-
     typer.echo(f"Logs directory: {LOG_DIR}")
-
-    log_file = LOG_DIR / "discord-helper.log"
-
-    if log_file.exists():
-        typer.echo(f"Main log file: {log_file}")
-    else:
-        typer.echo("No logs generated yet")
 
 
 @app.command()
 def discord_guide():
-    """Show Discord onboarding guide."""
-
     typer.echo("Discord Developer Portal:")
     typer.echo("https://discord.com/developers/applications")
-    typer.echo("")
-    typer.echo("See full guide in docs/discord-setup.md")
 
 
 @app.command()
 def update():
-    """Update Discord Helper source."""
-
     typer.echo("Update feature planned for future release")
 
 
 @app.command()
 def version():
-    """Show version."""
+    typer.echo("discord-helper 0.7.0")
 
-    typer.echo("discord-helper 0.4.0")
+
+# Diagnostics
 
 
 def _check_platform() -> None:
@@ -137,10 +126,6 @@ def _check_platform() -> None:
     if info.is_windows:
         typer.echo("Windows compatibility layer: ENABLED")
 
-
-# ------------------------------------------------------------------
-# Diagnostics
-# ------------------------------------------------------------------
 
 
 def _check_python() -> None:
@@ -185,10 +170,7 @@ def _check_cuda() -> None:
 
 
 def _check_config() -> None:
-    required = [
-        "DISCORD_TOKEN",
-        "OLLAMA_MODEL",
-    ]
+    required = ["DISCORD_TOKEN", "OLLAMA_MODEL"]
 
     missing: list[str] = []
 
