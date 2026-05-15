@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Discord Helper</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <main class="shell">
+    <nav class="sidebar">
+      <div class="brand">
+        <div class="logo">DH</div>
+        <div>
+          <strong>Discord Helper</strong>
+          <span>Local ASR + LLM Bot</span>
+        </div>
+      </div>
+
+      <button class="nav-item active">Overview</button>
+      <button class="nav-item">Setup</button>
+      <button class="nav-item">Models</button>
+      <button class="nav-item">Logs</button>
+    </nav>
+
+    <section class="content">
+      <header class="hero">
+        <div>
+          <p class="eyebrow">Experimental local assistant</p>
+          <h1>Run a private Discord voice AI bot from your machine.</h1>
+          <p class="subhead">Whisper for speech recognition, Ollama for local reasoning, and TTS for voice replies. No cloud LLM APIs required.</p>
+        </div>
+        <div class="status-card">
+          <span class="pulse"></span>
+          <div>
+            <strong>Development build</strong>
+            <p>Use only for testing.</p>
+          </div>
+        </div>
+      </header>
+
+      <section class="grid">
+        <article class="card command-card">
+          <span class="label">Start here</span>
+          <h2>Quick setup</h2>
+          <code>discord-helper setup</code>
+          <code>discord-helper doctor</code>
+          <code>discord-helper run</code>
+        </article>
+
+        <article class="card">
+          <span class="label cyan">Discord</span>
+          <h2>Bot onboarding</h2>
+          <p>Create your Discord application, enable intents, paste the bot token, and invite it to your server.</p>
+          <button>Open guide</button>
+        </article>
+
+        <article class="card">
+          <span class="label purple">Runtime</span>
+          <h2>Local stack</h2>
+          <ul>
+            <li>faster-whisper STT</li>
+            <li>Ollama LLM</li>
+            <li>HuggingFace TTS</li>
+          </ul>
+        </article>
+      </section>
+
+      <section class="terminal">
+        <div class="terminal-bar">
+          <span></span><span></span><span></span>
+        </div>
+        <pre><code>$ discord-helper doctor
+Python: OK
+FFmpeg: OK
+Ollama server: OK
+Configuration: OK
+Logs directory: OK</code></pre>
+      </section>
+    </section>
+  </main>
+</body>
+</html>
