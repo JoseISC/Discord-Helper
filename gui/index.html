@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Discord Helper</title>
-  <link rel="stylesheet" href="./styles.css" />
+  <link rel="stylesheet" href="/assets/styles.css" />
 </head>
 <body>
   <main class="shell">
@@ -31,10 +31,10 @@
           <p class="subhead">Whisper for speech recognition, Ollama for local reasoning, and TTS for voice replies. No cloud LLM APIs required.</p>
         </div>
         <div class="status-card">
-          <span class="pulse"></span>
+          <span class="pulse" id="runtime-pulse"></span>
           <div>
-            <strong>Development build</strong>
-            <p>Use only for testing.</p>
+            <strong id="runtime-title">Checking runtime...</strong>
+            <p id="runtime-subtitle">Waiting for local API.</p>
           </div>
         </div>
       </header>
@@ -49,19 +49,21 @@
         </article>
 
         <article class="card">
-          <span class="label cyan">Discord</span>
-          <h2>Bot onboarding</h2>
-          <p>Create your Discord application, enable intents, paste the bot token, and invite it to your server.</p>
-          <button>Open guide</button>
+          <span class="label cyan">Runtime</span>
+          <h2>System status</h2>
+          <ul class="status-list">
+            <li>Platform: <strong id="platform-value">...</strong></li>
+            <li>FFmpeg: <strong id="ffmpeg-value">...</strong></li>
+            <li>Ollama: <strong id="ollama-value">...</strong></li>
+            <li>NVIDIA: <strong id="nvidia-value">...</strong></li>
+          </ul>
         </article>
 
         <article class="card">
-          <span class="label purple">Runtime</span>
-          <h2>Local stack</h2>
-          <ul>
-            <li>faster-whisper STT</li>
-            <li>Ollama LLM</li>
-            <li>HuggingFace TTS</li>
+          <span class="label purple">Models</span>
+          <h2>Ollama models</h2>
+          <ul id="models-list" class="status-list">
+            <li>Loading models...</li>
           </ul>
         </article>
       </section>
@@ -70,14 +72,11 @@
         <div class="terminal-bar">
           <span></span><span></span><span></span>
         </div>
-        <pre><code>$ discord-helper doctor
-Python: OK
-FFmpeg: OK
-Ollama server: OK
-Configuration: OK
-Logs directory: OK</code></pre>
+        <pre><code id="log-output">Loading runtime logs...</code></pre>
       </section>
     </section>
   </main>
+
+  <script src="/assets/runtime.js"></script>
 </body>
 </html>
