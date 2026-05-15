@@ -12,6 +12,9 @@ from .config_loader import CONFIG_FILE
 from .config_loader import LOG_DIR
 from .config_loader import load_config
 from .config_loader import save_config
+from .platform_utils import detect_nvidia_smi
+from .platform_utils import detect_ollama
+from .platform_utils import get_platform_info
 from .runtime import run_bot
 from .service_manager import install_service as install_local_service
 from .service_manager import uninstall_service as uninstall_local_service
@@ -56,9 +59,11 @@ def doctor():
 
     typer.echo("Running diagnostics...\n")
 
+    _check_platform()
     _check_python()
     _check_ffmpeg()
     _check_ollama()
+    _check_cuda()
     _check_config()
     _check_logs()
 
@@ -121,7 +126,16 @@ def update():
 def version():
     """Show version."""
 
-    typer.echo("discord-helper 0.3.0")
+    typer.echo("discord-helper 0.4.0")
+
+
+def _check_platform() -> None:
+    info = get_platform_info()
+
+    typer.echo(f"Platform: {info.system} {info.release} ({info.machine})")
+
+    if info.is_windows:
+        typer.echo("Windows compatibility layer: ENABLED")
 
 
 # ------------------------------------------------------------------
@@ -145,29 +159,28 @@ def _check_ffmpeg() -> None:
 
 
 def _check_ollama() -> None:
-    ollama = shutil.which("ollama")
+    ollama = detect_ollama()
 
-    if not ollama:
+    if not ollama["binary"]:
         typer.echo("Ollama: NOT FOUND")
         return
 
-    typer.echo(f"Ollama binary: {ollama}")
+    typer.echo(f"Ollama binary: {ollama['binary']}")
 
-    try:
-        result = subprocess.run(
-            ["ollama", "list"],
-            capture_output=True,
-            text=True,
-            timeout=5,
-        )
+    if ollama["server_running"]:
+        typer.echo("Ollama server: OK")
+    else:
+        typer.echo("Ollama server: OFFLINE")
 
-        if result.returncode == 0:
-            typer.echo("Ollama server: OK")
-        else:
-            typer.echo("Ollama server: ERROR")
 
-    except Exception:
-        typer.echo("Ollama server: UNREACHABLE")
+
+def _check_cuda() -> None:
+    nvidia_smi = detect_nvidia_smi()
+
+    if nvidia_smi:
+        typer.echo(f"CUDA/NVIDIA: OK ({nvidia_smi})")
+    else:
+        typer.echo("CUDA/NVIDIA: NOT DETECTED")
 
 
 
