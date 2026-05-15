@@ -101,10 +101,27 @@ def logs():
 
 
 @app.command()
+def discord_guide():
+    """Show Discord onboarding guide."""
+
+    typer.echo("Discord Developer Portal:")
+    typer.echo("https://discord.com/developers/applications")
+    typer.echo("")
+    typer.echo("See full guide in docs/discord-setup.md")
+
+
+@app.command()
+def update():
+    """Update Discord Helper source."""
+
+    typer.echo("Update feature planned for future release")
+
+
+@app.command()
 def version():
     """Show version."""
 
-    typer.echo("discord-helper 0.2.0")
+    typer.echo("discord-helper 0.3.0")
 
 
 # ------------------------------------------------------------------
