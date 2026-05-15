@@ -1,4 +1,17 @@
+from __future__ import annotations
+
+import os
+import shutil
+import subprocess
+import sys
+
 import typer
+
+from .config_loader import CONFIG_FILE
+from .config_loader import LOG_DIR
+from .config_loader import load_config
+from .config_loader import save_config
+from .runtime import run_bot
 
 app = typer.Typer(help="Discord Helper CLI")
 
@@ -6,31 +19,139 @@ app = typer.Typer(help="Discord Helper CLI")
 @app.command()
 def setup():
     """Interactive setup wizard."""
-    typer.echo("Setup wizard placeholder")
+
+    typer.echo("Discord Helper Setup")
+
+    discord_token = typer.prompt("Discord bot token")
+    ollama_model = typer.prompt("Ollama model", default="llama3")
+    ollama_host = typer.prompt(
+        "Ollama host",
+        default="http://localhost:11434",
+    )
+    whisper_model = typer.prompt(
+        "Whisper model",
+        default="medium",
+    )
+
+    save_config(
+        {
+            "DISCORD_TOKEN": discord_token,
+            "OLLAMA_MODEL": ollama_model,
+            "OLLAMA_HOST": ollama_host,
+            "WHISPER_MODEL": whisper_model,
+        }
+    )
+
+    typer.echo(f"Configuration saved to: {CONFIG_FILE}")
 
 
 @app.command()
 def doctor():
     """Validate local environment."""
-    typer.echo("Doctor placeholder")
+
+    load_config()
+
+    typer.echo("Running diagnostics...\n")
+
+    _check_python()
+    _check_ffmpeg()
+    _check_ollama()
+    _check_config()
 
 
 @app.command()
 def run():
     """Run Discord Helper bot."""
-    typer.echo("Run placeholder")
+
+    run_bot()
 
 
 @app.command(name="install-service")
 def install_service():
     """Install local background service."""
-    typer.echo("Install service placeholder")
+
+    typer.echo("Sprint 2 feature")
 
 
 @app.command()
 def logs():
     """Show application logs."""
-    typer.echo("Logs placeholder")
+
+    typer.echo(f"Logs directory: {LOG_DIR}")
+
+
+@app.command()
+def version():
+    """Show version."""
+
+    typer.echo("discord-helper 0.1.0")
+
+
+# ------------------------------------------------------------------
+# Diagnostics
+# ------------------------------------------------------------------
+
+
+def _check_python() -> None:
+    typer.echo(f"Python: {sys.version.split()[0]}")
+
+
+
+def _check_ffmpeg() -> None:
+    ffmpeg = shutil.which("ffmpeg")
+
+    if ffmpeg:
+        typer.echo(f"FFmpeg: OK ({ffmpeg})")
+    else:
+        typer.echo("FFmpeg: NOT FOUND")
+
+
+
+def _check_ollama() -> None:
+    ollama = shutil.which("ollama")
+
+    if not ollama:
+        typer.echo("Ollama: NOT FOUND")
+        return
+
+    typer.echo(f"Ollama binary: {ollama}")
+
+    try:
+        result = subprocess.run(
+            ["ollama", "list"],
+            capture_output=True,
+            text=True,
+            timeout=5,
+        )
+
+        if result.returncode == 0:
+            typer.echo("Ollama server: OK")
+        else:
+            typer.echo("Ollama server: ERROR")
+
+    except Exception:
+        typer.echo("Ollama server: UNREACHABLE")
+
+
+
+def _check_config() -> None:
+    required = [
+        "DISCORD_TOKEN",
+        "OLLAMA_MODEL",
+    ]
+
+    missing: list[str] = []
+
+    for key in required:
+        if not os.getenv(key):
+            missing.append(key)
+
+    if missing:
+        typer.echo("Missing config:")
+        for item in missing:
+            typer.echo(f" - {item}")
+    else:
+        typer.echo("Configuration: OK")
 
 
 if __name__ == "__main__":
