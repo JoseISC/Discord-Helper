@@ -1,47 +1,69 @@
-# ⚠️ WARNING — EXPERIMENTAL PROJECT
+# DISCORD HELPER
 
-This project was developed as a heavily vibe-coded experimental prototype.
+```text
+╔══════════════════════════════════════════════════════════════╗
+║  LOCAL VOICE AI ASSISTANT — OLLAMA + WHISPER + DISCORD     ║
+║  Experimental retro-runtime inspired by Windows XP tools   ║
+╚══════════════════════════════════════════════════════════════╝
+```
 
-- NOT production ready
-- APIs and architecture may change at any time
-- Installation flow is still unstable
-- Service management is incomplete
-- Security and stability have NOT been audited
-
-Please use this repository ONLY for:
-
-- testing
-- experimentation
-- development exploration
-- local sandbox environments
-
-DO NOT use this in production environments.
-
-Spanish documentation is available in:
-
-- docs/es/
+> ⚠️ EXPERIMENTAL SOFTWARE  
+> 100% vibe-coded prototype. Use only for testing and experimentation.
 
 ---
 
-# Discord Local ASR & LLM Bot
+## Preview
 
-Discord bot that captures voice audio, transcribes it locally using faster-whisper, and responds using a local LLM through Ollama.
+Retro GUI included in:
 
----
-
-# Features
-
-- Local speech-to-text using Whisper
-- Local LLM responses using Ollama
-- Voice channel interaction
-- Text chat interaction
-- Text-to-speech responses
-- Installable CLI workflow
-- Linux and macOS support
+```text
+gui/index.html
+```
 
 ---
 
-# Quick Install
+## Style
+
+Discord Helper now uses a visual identity inspired by:
+
+- Ollama
+- Windows XP utilities
+- retro desktop runtimes
+- old-school local AI tools
+- terminal-first applications
+
+Palette:
+
+- cream
+- bone
+- XP blue
+- soft purple
+- warm terminal tones
+
+---
+
+## Features
+
+### Local AI Stack
+
+- faster-whisper speech-to-text
+- Ollama local LLM runtime
+- HuggingFace TTS
+- Discord voice integration
+- fully local execution
+
+### Runtime Features
+
+- installable CLI
+- Linux + macOS support
+- background service support
+- conversational memory
+- TTS sanitization
+- per-guild voice isolation
+
+---
+
+## Quick Install
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/JoseISC/Discord-Helper/instalador/scripts/install.sh | bash
@@ -49,99 +71,76 @@ curl -fsSL https://raw.githubusercontent.com/JoseISC/Discord-Helper/instalador/s
 
 ---
 
-# Initial Setup
-
-Run:
+## First Run
 
 ```bash
 discord-helper setup
-```
-
-Then validate installation:
-
-```bash
 discord-helper doctor
-```
-
-Finally run the bot:
-
-```bash
 discord-helper run
 ```
 
 ---
 
-# Service Installation
+## GUI
 
-Optional background service installation:
+Experimental retro-inspired local GUI included:
+
+```text
+gui/index.html
+```
+
+Style inspiration:
+
+- Windows XP
+- Ollama
+- old desktop utilities
+- retro terminal tooling
+
+---
+
+## Runtime Commands
 
 ```bash
+discord-helper setup
+discord-helper doctor
+discord-helper run
+discord-helper logs
 discord-helper install-service
 ```
 
 ---
 
-# Logs
+## Project Status
 
-```bash
-discord-helper logs
-```
-
-Persistent logs are stored in:
-
-```text
-~/.local/share/discord-helper/logs/
-```
+| Sprint | Status |
+|---|---|
+| Sprint 1 | CLI + installer |
+| Sprint 2 | services + logs |
+| Sprint 3 | onboarding + install.sh |
+| Sprint 4 | async runtime stabilization |
+| Sprint 5 | conversational memory + sanitization |
 
 ---
 
-# Discord Setup Guide
-
-```bash
-discord-helper discord-guide
-```
-
-Or see:
-
-- docs/discord-setup.md
-
----
-
-# Current Status
-
-## Sprint 1
-
-- Installable package
-- CLI
-- Persistent config
-- Runtime wrapper
-- Environment diagnostics
-
-## Sprint 2
-
-- Persistent logs
-- Runtime manager
-- Graceful shutdown
-- systemd support
-- launchd support
-- Service installation
-
-## Sprint 3
-
-- install.sh bootstrap installer
-- Linux/macOS onboarding
-- Discord onboarding
-- User documentation
-
----
-
-# Supported Platforms
+## Supported Platforms
 
 - Linux
 - macOS (experimental)
 
 ---
 
-# License
+## Documentation
+
+English documentation:
+
+- docs/
+
+Spanish documentation:
+
+- docs/es/
+
+---
+
+## License
 
 Experimental open-source project.
