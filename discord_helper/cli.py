@@ -4,6 +4,7 @@ import os
 import shutil
 import subprocess
 import sys
+from pathlib import Path
 
 import typer
 
@@ -12,6 +13,8 @@ from .config_loader import LOG_DIR
 from .config_loader import load_config
 from .config_loader import save_config
 from .runtime import run_bot
+from .service_manager import install_service as install_local_service
+from .service_manager import uninstall_service as uninstall_local_service
 
 app = typer.Typer(help="Discord Helper CLI")
 
@@ -57,6 +60,7 @@ def doctor():
     _check_ffmpeg()
     _check_ollama()
     _check_config()
+    _check_logs()
 
 
 @app.command()
@@ -70,7 +74,16 @@ def run():
 def install_service():
     """Install local background service."""
 
-    typer.echo("Sprint 2 feature")
+    result = install_local_service()
+    typer.echo(result)
+
+
+@app.command(name="uninstall-service")
+def uninstall_service():
+    """Remove local background service."""
+
+    result = uninstall_local_service()
+    typer.echo(result)
 
 
 @app.command()
@@ -79,12 +92,19 @@ def logs():
 
     typer.echo(f"Logs directory: {LOG_DIR}")
 
+    log_file = LOG_DIR / "discord-helper.log"
+
+    if log_file.exists():
+        typer.echo(f"Main log file: {log_file}")
+    else:
+        typer.echo("No logs generated yet")
+
 
 @app.command()
 def version():
     """Show version."""
 
-    typer.echo("discord-helper 0.1.0")
+    typer.echo("discord-helper 0.2.0")
 
 
 # ------------------------------------------------------------------
@@ -152,6 +172,14 @@ def _check_config() -> None:
             typer.echo(f" - {item}")
     else:
         typer.echo("Configuration: OK")
+
+
+
+def _check_logs() -> None:
+    if LOG_DIR.exists():
+        typer.echo(f"Logs directory: OK ({LOG_DIR})")
+    else:
+        typer.echo("Logs directory: NOT FOUND")
 
 
 if __name__ == "__main__":
