@@ -12,26 +12,12 @@ import sys
 
 
 def _preload_cuda_libs() -> None:
-    """
-    Precarga las librerías CUDA instaladas vía pip usando ctypes, para que
-    CTranslate2 / faster-whisper / PyTorch puedan resolverlas en tiempo de
-    ejecución sin necesidad de configurar LD_LIBRARY_PATH externamente.
-
-    Cubre:
-      - nvidia-cublas-cu12 / nvidia-cudnn-cu12 (faster-whisper / CTranslate2)
-      - nvidia-cu13 (paquete agregado de torch >= 2.10 con CUDA 13:
-        cublas, cudart, cudnn, cufft, cusparse, NVRTC, etc.)
-      - nvidia-cuda-nvrtc-cu12 (NVRTC para versiones torch CUDA 12)
-
-    Esto debe ejecutarse ANTES de importar faster-whisper o torch.
-    """
     import ctypes
     import glob
     import importlib.util
 
     candidates: list[str] = []
 
-    # Paquetes con submódulo .lib (typical layout)
     pkg_lib_paths = (
         "nvidia.cublas.lib",
         "nvidia.cudnn.lib",
@@ -49,9 +35,6 @@ def _preload_cuda_libs() -> None:
             for so in sorted(glob.glob(os.path.join(lib_dir, "lib*.so*"))):
                 candidates.append(so)
 
-    # Paquetes con layout <pkg>/lib/<libs.so> (torch CUDA 13 agrupa todas las libs
-    # en nvidia/cu13/lib/, donde 'cu13' NO es un package python sino una carpeta
-    # namespace; hay que localizarlo manualmente vía importlib).
     for top_pkg, subdir in (("nvidia.cu13", "lib"),):
         try:
             spec = importlib.util.find_spec(top_pkg)
@@ -78,7 +61,7 @@ _preload_cuda_libs()
 import discord
 from discord.ext import commands
 
-from src import config  # valida .env al importar
+from src import asr, config, tts
 
 logging.basicConfig(
     level=logging.INFO,
@@ -111,6 +94,13 @@ class AmlaBot(commands.Bot):
 
         await self.tree.sync()
         logger.info("Slash commands sincronizados.")
+
+        # Sprint 4:
+        # Preload heavy models in background without blocking startup.
+        asyncio.create_task(asr.get_model())
+        asyncio.create_task(tts.get_model())
+
+        logger.info("Background model preload started")
 
     async def on_ready(self) -> None:
         logger.info("Bot conectado como %s (ID: %s)", self.user, self.user.id)
