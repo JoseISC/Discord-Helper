@@ -13,7 +13,6 @@ import discord
 
 logger = logging.getLogger(__name__)
 
-# Un Lock por guild_id para serializar reproducciones concurrentes
 _guild_locks: dict[int, asyncio.Lock] = {}
 
 
@@ -24,18 +23,10 @@ def _get_lock(guild_id: int) -> asyncio.Lock:
 
 
 async def play_wav(vc: discord.VoiceClient, wav_path: str) -> None:
-    """
-    Reproduce `wav_path` en el canal de voz `vc` y espera hasta que termine.
+    """Reproduce `wav_path` en el canal de voz `vc` y espera hasta que termine.
 
-    - Serializa reproducciones por guild (segunda llamada espera a que acabe la primera).
+    - Serializa reproducciones por guild.
     - Elimina el archivo temporal al terminar (o si ocurre un error).
-
-    Args:
-        vc:       Cliente de voz conectado al canal de destino.
-        wav_path: Ruta al archivo WAV temporal generado por el módulo TTS.
-
-    Raises:
-        RuntimeError: Si el VoiceClient no está conectado.
     """
     if not vc.is_connected():
         try:
@@ -49,8 +40,6 @@ async def play_wav(vc: discord.VoiceClient, wav_path: str) -> None:
         loop = asyncio.get_running_loop()
 
         def _after(error: Exception | None) -> None:
-            # Este callback se ejecuta en el hilo de reproducción de discord.py.
-            # Limpiamos el temporal aquí para garantizar que ocurre tras la reproducción.
             try:
                 os.unlink(wav_path)
                 logger.debug("Archivo temporal eliminado: %s", wav_path)
@@ -62,7 +51,6 @@ async def play_wav(vc: discord.VoiceClient, wav_path: str) -> None:
 
             loop.call_soon_threadsafe(done.set)
 
-        # Si ya está reproduciendo algo (p.ej. dos /stop muy rápidos), detener primero.
         if vc.is_playing():
             vc.stop()
 

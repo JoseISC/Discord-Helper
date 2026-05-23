@@ -1,7 +1,6 @@
 """
 Voice cog for Discord Helper.
 
-Sprint 5:
 - per-guild state container
 - per-guild conversation history
 - /clear command
@@ -16,11 +15,11 @@ from dataclasses import dataclass, field
 
 import discord
 from discord import app_commands
-from discord.ext import commands, voice_recv
+from discord.ext import commands, voice_recv  # type: ignore[import]
 
-from src import asr, audio, llm, tts
-from src.sink import WaveSink
-from src.text_utils import sanitize_for_tts
+from discord_helper.core import asr, audio, llm, tts
+from discord_helper.core.sink import WaveSink
+from discord_helper.core.text_utils import sanitize_for_tts
 
 logger = logging.getLogger(__name__)
 
@@ -30,11 +29,7 @@ MAX_RECORD_SECONDS = 60
 
 @dataclass
 class GuildVoiceState:
-    """Per-guild mutable voice state.
-
-    The cog is a singleton, so all mutable state must be stored behind guild_id
-    to avoid one server affecting another.
-    """
+    """Per-guild mutable voice state."""
 
     recording: bool = False
     active_sink: WaveSink | None = None
@@ -212,7 +207,7 @@ class VoiceCog(commands.Cog):
 
         vc.listen(sink)
         logger.info("Grabación continua iniciada en guild %s.", guild_id)
-        await interaction.response.send_message("Escuchando... Habla cuando quieras. Usa `/stop` cuando termines para que te responda por voz.")
+        await interaction.response.send_message("Escuchando... Habla cuando quieras. Usa `/stop` cuando termines.")
 
     @app_commands.command(name="stop", description="Detiene la escucha, procesa tu pregunta y responde con voz.")
     async def stop(self, interaction: discord.Interaction) -> None:

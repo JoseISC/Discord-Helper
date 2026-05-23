@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Discord Helper</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323:wght@400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+
+<div class="window">
+
+  <!-- XP title bar -->
+  <div class="titlebar">
+    <div class="titlebar-left">
+      <img src="/assets/mascot.png" class="titlebar-icon" alt="DH" />
+      <span class="titlebar-title">Discord Helper</span>
+    </div>
+    <div class="titlebar-buttons">
+      <button class="tb-btn tb-min" title="Minimize">_</button>
+      <button class="tb-btn tb-max" title="Maximize">□</button>
+      <button class="tb-btn tb-close" title="Close">✕</button>
+    </div>
+  </div>
+
+  <!-- body: sidebar + main content -->
+  <div class="body">
+
+    <!-- sidebar -->
+    <nav class="sidebar">
+      <div class="sidebar-brand">
+        <img src="/assets/mascot.png" class="brand-icon" alt="mascot" />
+        <div>
+          <div class="brand-name">DISCORD HELPER</div>
+          <div class="brand-ver" id="brand-ver">v0.7.0</div>
+        </div>
+      </div>
+
+      <div class="menu-label">MENU</div>
+      <ul class="nav-list">
+        <li class="nav-item active" data-tab="overview">🏠 Overview</li>
+        <li class="nav-item" data-tab="setup">⚙ Setup</li>
+        <li class="nav-item" data-tab="models">🧊 Models</li>
+        <li class="nav-item" data-tab="voice">🎙 Voice</li>
+        <li class="nav-item" data-tab="chat">💬 Chat</li>
+        <li class="nav-item" data-tab="logs">📋 Logs</li>
+        <li class="nav-item" data-tab="settings">🔧 Settings</li>
+        <li class="nav-item" data-tab="about">ℹ About</li>
+      </ul>
+
+      <div class="sidebar-footer">
+        <div class="sidebar-footer-line">DISCORD HELPER v0.7.0</div>
+        <div class="sidebar-footer-line">Built with Python 🐍</div>
+      </div>
+    </nav>
+
+    <!-- main panel -->
+    <main class="main-panel">
+
+      <!-- ── TAB: OVERVIEW ── -->
+      <section class="tab-content active" id="tab-overview">
+
+        <!-- hero row: mascot + title + runtime status -->
+        <div class="hero">
+          <div class="hero-left">
+            <img src="/assets/mascot.png" class="hero-mascot" alt="Discord Helper mascot" />
+            <div class="hero-text">
+              <h1 class="hero-title">DISCORD HELPER</h1>
+              <div class="hero-sub">local voice assistant</div>
+              <div class="hero-badge">⚠ EXPERIMENTAL SOFTWARE</div>
+              <div class="hero-tagline">100% local &nbsp;·&nbsp; No external APIs &nbsp;·&nbsp; Privacy first</div>
+            </div>
+          </div>
+          <div class="status-card" id="runtime-card">
+            <div class="status-indicator">
+              <span class="pulse" id="runtime-pulse"></span>
+              <span class="status-label" id="runtime-status">Checking...</span>
+            </div>
+            <div class="status-rows">
+              <div class="status-row"><span>Bot:</span> <strong id="bot-connected">—</strong></div>
+              <div class="status-row"><span>Uptime:</span> <strong id="bot-uptime">—</strong></div>
+              <div class="status-row"><span>Guilds:</span> <strong id="bot-guilds">—</strong></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3-card grid -->
+        <div class="cards-grid">
+
+          <!-- Quick Setup -->
+          <div class="card">
+            <div class="card-label">QUICK SETUP</div>
+            <div class="card-icon">🖥</div>
+            <ol class="card-steps">
+              <li>Configure .env file</li>
+              <li>Start Ollama</li>
+              <li>Run the bot</li>
+              <li>Invite to Discord</li>
+            </ol>
+            <button class="xp-btn" onclick="document.querySelector('[data-tab=setup]').click()">Open Setup Wizard &gt;&gt;</button>
+          </div>
+
+          <!-- Discord status -->
+          <div class="card">
+            <div class="card-label" style="color:var(--xp-purple)">DISCORD</div>
+            <div class="card-icon">💬</div>
+            <ul class="check-list">
+              <li><span class="check green">✓</span> Slash Commands: <strong id="discord-slash">6</strong></li>
+              <li><span class="check" id="chk-voice">·</span> Voice Capture: <strong id="discord-voice">—</strong></li>
+              <li><span class="check" id="chk-tts">·</span> TTS Playback: <strong id="discord-tts">—</strong></li>
+              <li><span class="check" id="chk-text">·</span> Text Mentions: <strong id="discord-text">—</strong></li>
+            </ul>
+            <button class="xp-btn" onclick="document.querySelector('[data-tab=voice]').click()">View Commands</button>
+          </div>
+
+          <!-- Runtime Stack -->
+          <div class="card">
+            <div class="card-label" style="color:var(--xp-green-dark)">RUNTIME STACK</div>
+            <div class="card-icon">⚡</div>
+            <ul class="stack-list">
+              <li><span class="stack-icon">🎤</span> STT: <strong id="stack-stt">—</strong></li>
+              <li><span class="stack-icon">🧠</span> LLM: <strong id="stack-llm">—</strong></li>
+              <li><span class="stack-icon">🔊</span> TTS: <strong id="stack-tts">—</strong></li>
+              <li><span class="stack-icon">🎵</span> Audio: <strong id="stack-audio">—</strong></li>
+            </ul>
+            <button class="xp-btn" onclick="document.querySelector('[data-tab=models]').click()">View Models</button>
+          </div>
+
+        </div>
+
+        <!-- Terminal output -->
+        <div class="terminal-wrapper">
+          <div class="terminal-titlebar">
+            <span class="terminal-title">TERMINAL</span>
+            <div class="terminal-dots">
+              <span></span><span></span><span></span>
+            </div>
+          </div>
+          <div class="terminal-body">
+            <pre id="terminal-output">Loading runtime logs...</pre>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ── PLACEHOLDER TABS ── -->
+      <section class="tab-content" id="tab-setup">
+        <div class="placeholder-tab">
+          <div class="placeholder-icon">⚙</div>
+          <div class="placeholder-title">SETUP WIZARD</div>
+          <div class="placeholder-sub">Coming soon — pixel-perfect</div>
+          <div class="placeholder-hint">Run <code>discord-helper setup</code> in your terminal.</div>
+        </div>
+      </section>
+
+      <section class="tab-content" id="tab-models">
+        <div class="placeholder-tab">
+          <div class="placeholder-icon">🧊</div>
+          <div class="placeholder-title">MODELS</div>
+          <div class="placeholder-sub">Coming soon — pixel-perfect</div>
+          <div class="placeholder-hint">Available Ollama models will appear here.</div>
+        </div>
+      </section>
+
+      <section class="tab-content" id="tab-voice">
+        <div class="placeholder-tab">
+          <div class="placeholder-icon">🎙</div>
+          <div class="placeholder-title">VOICE COMMANDS</div>
+          <div class="placeholder-sub">Coming soon — pixel-perfect</div>
+          <div class="placeholder-hint">/join &nbsp;·&nbsp; /leave &nbsp;·&nbsp; /start &nbsp;·&nbsp; /stop &nbsp;·&nbsp; /ask</div>
+        </div>
+      </section>
+
+      <section class="tab-content" id="tab-chat">
+        <div class="placeholder-tab">
+          <div class="placeholder-icon">💬</div>
+          <div class="placeholder-title">CHAT</div>
+          <div class="placeholder-sub">Coming soon — pixel-perfect</div>
+          <div class="placeholder-hint">Use /chat or @mention the bot in Discord.</div>
+        </div>
+      </section>
+
+      <section class="tab-content" id="tab-logs">
+        <div class="placeholder-tab">
+          <div class="placeholder-icon">📋</div>
+          <div class="placeholder-title">LOGS</div>
+          <div class="placeholder-sub">Coming soon — pixel-perfect</div>
+          <div class="placeholder-hint">Run <code>discord-helper logs</code> to see log location.</div>
+        </div>
+      </section>
+
+      <section class="tab-content" id="tab-settings">
+        <div class="placeholder-tab">
+          <div class="placeholder-icon">🔧</div>
+          <div class="placeholder-title">SETTINGS</div>
+          <div class="placeholder-sub">Coming soon — pixel-perfect</div>
+          <div class="placeholder-hint">Config lives at <code>~/.config/discord-helper/config.env</code></div>
+        </div>
+      </section>
+
+      <section class="tab-content" id="tab-about">
+        <div class="placeholder-tab">
+          <div class="placeholder-icon"><img src="/assets/mascot.png" style="width:80px;image-rendering:pixelated" alt="mascot"/></div>
+          <div class="placeholder-title">DISCORD HELPER</div>
+          <div class="placeholder-sub">v0.7.0 — 100% local AI on Discord</div>
+          <div class="placeholder-hint">Whisper · Ollama · HuggingFace TTS · FFmpeg</div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- XP status bar -->
+  <div class="statusbar">
+    <span id="status-left">Status: <strong id="status-text">Connecting...</strong></span>
+    <span id="status-right">Ready.</span>
+  </div>
+
+</div>
+
+<script src="/runtime.js"></script>
+</body>
+</html>

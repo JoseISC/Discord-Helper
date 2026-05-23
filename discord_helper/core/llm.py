@@ -3,7 +3,7 @@
 import logging
 from typing import AsyncIterator
 
-import ollama
+import ollama  # type: ignore[import]
 
 from . import config
 
@@ -22,10 +22,8 @@ _client: ollama.AsyncClient | None = None
 MAX_HISTORY_TURNS = 10
 
 
-
 def trim_history(history: list[dict]) -> list[dict]:
     return history[-(MAX_HISTORY_TURNS * 2):]
-
 
 
 def _get_client() -> ollama.AsyncClient:

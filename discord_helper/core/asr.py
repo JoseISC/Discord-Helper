@@ -1,7 +1,6 @@
 """
 Motor de transcripción de voz usando faster-whisper.
 
-Sprint 4:
 - lazy singleton asíncrono
 - carga no bloqueante
 - cleanup seguro de temporales
@@ -14,7 +13,7 @@ import os
 import tempfile
 from typing import Optional
 
-from faster_whisper import WhisperModel
+from faster_whisper import WhisperModel  # type: ignore[import]
 
 from . import config
 

@@ -1,4 +1,4 @@
-from src.text_utils import sanitize_for_tts
+from discord_helper.core.text_utils import sanitize_for_tts
 
 
 def test_remove_code_block():

@@ -12,7 +12,7 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
-from src import llm
+from discord_helper.core import llm
 
 logger = logging.getLogger(__name__)
 
@@ -23,10 +23,6 @@ MAX_RESPONSE_LENGTH = 1900
 class ChatCog(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:
         self.bot = bot
-
-    # ------------------------------------------------------------------
-    # /chat
-    # ------------------------------------------------------------------
 
     @app_commands.command(name="chat", description="Envía un mensaje de texto al asistente IA local.")
     @app_commands.describe(mensaje="Escribe tu pregunta o mensaje aquí.")
@@ -50,10 +46,6 @@ class ChatCog(commands.Cog):
 
         embed = _build_embed(mensaje, respuesta)
         await interaction.followup.send(embed=embed)
-
-    # ------------------------------------------------------------------
-    # Responde a menciones directas (@Bot mensaje)
-    # ------------------------------------------------------------------
 
     @commands.Cog.listener()
     async def on_message(self, message: discord.Message) -> None:

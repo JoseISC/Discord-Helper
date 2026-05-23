@@ -6,9 +6,9 @@ import os
 import tempfile
 import wave
 
-import numpy as np
-import torch
-from transformers import AutoTokenizer, VitsModel
+import numpy as np  # type: ignore[import]
+import torch  # type: ignore[import]
+from transformers import AutoTokenizer, VitsModel  # type: ignore[import]
 
 from . import config
 
@@ -64,11 +64,7 @@ async def synthesize(text: str) -> str:
 
 
 async def _fallback_to_cpu_and_retry(text: str, original_error: Exception) -> str:
-    """Fallback to CPU if GPU inference fails.
-
-    This preserves the original CUDA to CPU behavior while keeping the lazy async
-    singleton pattern introduced in Sprint 4.
-    """
+    """Fallback to CPU if GPU inference fails."""
     global _active_device, _model, _tokenizer
 
     if _active_device == "cpu":

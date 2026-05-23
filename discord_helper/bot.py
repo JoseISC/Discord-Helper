@@ -1,9 +1,11 @@
 """
-Entry point del bot de Discord.
+AmlaBot — entry point del bot de Discord.
 
 Usa discord.py 2.7+ que incluye soporte nativo para DAVE/E2EE
 (protocolo obligatorio en Discord desde marzo de 2026).
 """
+
+from __future__ import annotations
 
 import asyncio
 import logging
@@ -51,6 +53,7 @@ def _preload_cuda_libs() -> None:
 
     for so in candidates:
         try:
+            import ctypes
             ctypes.CDLL(so, mode=ctypes.RTLD_GLOBAL)
         except OSError:
             pass
@@ -58,10 +61,11 @@ def _preload_cuda_libs() -> None:
 
 _preload_cuda_libs()
 
-import discord
-from discord.ext import commands
+import discord  # noqa: E402
+from discord.ext import commands  # noqa: E402
 
-from src import asr, config, tts
+from discord_helper.core import asr, tts  # noqa: E402
+from discord_helper.core import config as core_config  # noqa: E402
 
 logging.basicConfig(
     level=logging.INFO,
@@ -73,8 +77,8 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 EXTENSIONS = [
-    "src.cogs.voice",
-    "src.cogs.chat",
+    "discord_helper.cogs.voice",
+    "discord_helper.cogs.chat",
 ]
 
 
@@ -95,8 +99,6 @@ class AmlaBot(commands.Bot):
         await self.tree.sync()
         logger.info("Slash commands sincronizados.")
 
-        # Sprint 4:
-        # Preload heavy models in background without blocking startup.
         asyncio.create_task(asr.get_model())
         asyncio.create_task(tts.get_model())
 
@@ -119,7 +121,7 @@ class AmlaBot(commands.Bot):
 async def main() -> None:
     async with AmlaBot() as bot:
         logger.info("Iniciando bot...")
-        await bot.start(config.DISCORD_TOKEN)
+        await bot.start(core_config.DISCORD_TOKEN)
 
 
 if __name__ == "__main__":

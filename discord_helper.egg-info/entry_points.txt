@@ -1,0 +1,2 @@
+[console_scripts]
+discord-helper = discord_helper.cli:app
